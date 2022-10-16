@@ -7,16 +7,19 @@ extern CAN_HandleTypeDef hcan1;
 class TelemetryCanTxPacket {
 	public:
 		void writeByte(uint8_t byte);
-		uint8_t getData();
-		uint8_t data[8];
+		uint8_t getSize();
 	private:
 		uint8_t ptr = 0;
+		uint8_t data[8];
 };
-
 
 void TelemetryCanTxPacket::writeByte(uint8_t byte) {
 	if(ptr == 8) return;
 	data[ptr++] = byte;
+}
+
+uint8_t TelemetryCanTxPacket::getSize() {
+	return ptr;
 }
 
 class TelemetryCanTxPacket_IMU_Accel : private TelemetryCanTxPacket {
@@ -94,17 +97,11 @@ class TelemetryCanTxPacket_IMU_Temp_HighRes : private TelemetryCanTxPacket {
 
 class TelemetryCanRxPacket {
 	public:
-		void readByte(uint8_t *byte);
 		CAN_RxHeaderTypeDef header;
 		uint8_t data[8];
 	private:
 		uint8_t ptr = 0;
 };
-
-
-void TelemetryCanRxPacket::readByte(uint8_t *byte) {
-	*byte = data[ptr++];
-}
 
 
 
@@ -129,7 +126,7 @@ TelemetryCan::TelemetryCan(uint8_t groupId, uint8_t uniqueId) {
 }
 
 void TelemetryCan::send(TelemetryCanTxPacket *packet) {
-	header.DLC = sizeof(packet->data);
+	header.DLC = packet->ptr;
 	HAL_CAN_AddTxMessage(&hcan1, &header, packet->data, (uint32_t*) CAN_TX_MAILBOX0);
 }
 
