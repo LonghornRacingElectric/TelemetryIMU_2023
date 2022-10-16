@@ -7,7 +7,7 @@ extern "C" {
 
 #include "main.h"
 
-void projectMain(void);
+void projectMain();
 
 #ifdef __cplusplus
 }
