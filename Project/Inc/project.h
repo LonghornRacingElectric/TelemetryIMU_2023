@@ -5,8 +5,6 @@
 extern "C" {
 #endif
 
-#include "main.h"
-
 void projectMain();
 
 #ifdef __cplusplus
