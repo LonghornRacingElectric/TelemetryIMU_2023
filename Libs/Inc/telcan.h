@@ -37,7 +37,7 @@ class TelemetryCanPacket {
 class TelemetryCan {
 	public:
 		TelemetryCan(uint8_t groupId, uint8_t uniqueId);
-		void send(TelemetryCanPacket *packet);
+		void send(TelemetryCanPacket *packet, uint32_t mailbox);
 	private:
 		CAN_TxHeaderTypeDef header;
 };

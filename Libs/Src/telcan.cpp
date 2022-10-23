@@ -41,7 +41,7 @@ TelemetryCan::TelemetryCan(uint8_t groupId, uint8_t uniqueId) {
 	header.RTR = CAN_RTR_DATA;
 }
 
-void TelemetryCan::send(TelemetryCanPacket *packet) {
+void TelemetryCan::send(TelemetryCanPacket *packet, uint32_t mailbox) {
 	header.DLC = packet->getSize();
-	HAL_CAN_AddTxMessage(&hcan1, &header, packet->data, (uint32_t*) CAN_TX_MAILBOX0);
+	HAL_CAN_AddTxMessage(&hcan1, &header, packet->data, (uint32_t*) mailbox);
 }

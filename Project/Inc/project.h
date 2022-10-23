@@ -1,9 +1,19 @@
-#ifndef __PROGRAM_H
-#define __PROGRAM_H
+#ifndef __PROJECT_H
+#define __PROJECT_H
 
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+
+
+/* BEGIN CONFIGURATION */
+
+#define GYRO_ENABLE
+
+/* END CONFIGURATION */
+
+
 
 void projectMain();
 
@@ -11,4 +21,4 @@ void projectMain();
 }
 #endif
 
-#endif /* __PROGRAM_H */
+#endif /* __PROJECT_H */
