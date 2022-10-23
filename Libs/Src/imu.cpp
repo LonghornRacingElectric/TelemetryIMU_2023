@@ -71,9 +71,9 @@ void IMU::checkAndCalibrate() {
 	}
 }
 
-void IMU::cubeTest(uint8_t *accelXp, uint8_t *accelXn,
-		uint8_t *accelYp, uint8_t *accelYn,
-		uint8_t *accelZp, uint8_t *accelZn) {
+void IMU::cubeTest(float *accelXp, float *accelXn,
+		float *accelYp, float *accelYn,
+		float *accelZp, float *accelZn) {
 
 	uint8_t incomplete = 0b111111; // X+ X- Y+ Y- Z+ Z-
 
@@ -188,9 +188,12 @@ void IMU::cubeTest(uint8_t *accelXp, uint8_t *accelXn,
 				incomplete -= stableAxis;
 				stableSamples = std::queue<float>();
 
-				setLED(true);
-				HAL_Delay(500);
-				setLED(false);
+				for(int j = 0; j < 3; j++) {
+					setLED(false);
+					HAL_Delay(125);
+					setLED(true);
+					HAL_Delay(125);
+				}
 			}
 		} else {
 			stableSamples = std::queue<float>();
@@ -208,12 +211,12 @@ void IMU::calibrate() {
 
 	cubeTest(&accelXp, &accelXn, &accelYp, &accelYn, &accelZp, &accelZn);
 
-	accelX0 = -(accelXp + accelXn) / 2.0f;
-	accelX1 = GRAVITY / (accelXp + accelX0);
-	accelY0 = -(accelYp + accelYn) / 2.0f;
-	accelY1 = GRAVITY / (accelYp + accelY0);
-	accelZ0 = -(accelZp + accelZn) / 2.0f;
-	accelZ1 = GRAVITY / (accelZp + accelZ0);
+	float accelX0 = -(accelXp + accelXn) / 2.0f;
+	float accelX1 = GRAVITY / (accelXp + accelX0);
+	float accelY0 = -(accelYp + accelYn) / 2.0f;
+	float accelY1 = GRAVITY / (accelYp + accelY0);
+	float accelZ0 = -(accelZp + accelZn) / 2.0f;
+	float accelZ1 = GRAVITY / (accelZp + accelZ0);
 
 	// TODO write to memory
 }
