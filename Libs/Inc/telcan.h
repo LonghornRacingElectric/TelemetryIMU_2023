@@ -18,10 +18,6 @@
 #define TELCAN_PACKET_TYPE_IMU_TEMP_HIGHRES 0b0111
 
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 #include <stdint.h>
 #include "stm32f1xx_hal.h"
 
@@ -51,9 +47,5 @@ class TelemetryCanPacket_IMU_Gyro : public TelemetryCanPacket {
 	public:
 		TelemetryCanPacket_IMU_Gyro(uint16_t gyroX, uint16_t gyroY, uint16_t gyroZ);
 };
-
-#ifdef __cplusplus
-}
-#endif
 
 #endif /* __TELCAN_H */

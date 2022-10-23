@@ -1,11 +1,9 @@
 #ifndef __IMU_H
 #define __IMU_H
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 #include <stdint.h>
+#include <queue>
+#include <stdlib.h>
 #include "stm32f1xx_hal.h"
 
 
@@ -13,7 +11,13 @@ extern "C" {
 /* CONSTANTS */
 
 #define I2C_ADDRESS		0x6B
+#define ACCEL_LSB		0.00048828125 // 2^-11
 #define TIMEOUT			1000
+#define GRAVITY			9.81
+#define BTN_TIME		3000
+#define STABLE_DEADZONE	0.5
+#define STABLE_RANGE	0.4
+#define STABLE_SAMPLES	500
 
 
 
@@ -21,8 +25,6 @@ extern "C" {
 
 #define REG_CTRL1_XL	0x10
 #define REG_CTRL2_G		0x11
-
-#define REG_USR_OFFSET	0x73 // X, Y, Z
 
 #define REG_WHO_AM_I	0x0F
 #define REG_STATUS		0x1E
@@ -44,18 +46,23 @@ class IMU {
 		void readAccel(uint16_t *accelX, uint16_t *accelY, uint16_t *accelZ);
 		bool isGyroReady();
 		void readGyro(uint16_t *gyroX, uint16_t *gyroY, uint16_t *gyroZ);
+
+		void checkAndCalibrate();
 	private:
+		uint8_t buffer[6];
+		uint16_t timer = 0;
+
 		void regWrite(uint8_t address, uint8_t length);
 		void regWrite(uint8_t address);
 		void regRead(uint8_t address, uint8_t length);
 		void regRead(uint8_t address);
-		uint8_t buffer[6];
+
+		void setLED(bool on);
+		void cubeTest(uint8_t *accelXp, uint8_t *accelXn,
+				uint8_t *accelYp, uint8_t *accelYn,
+				uint8_t *accelZp, uint8_t *accelZn);
+		void calibrate();
 };
 
-
-
-#ifdef __cplusplus
-}
-#endif
 
 #endif /* __IMU_H */

@@ -15,8 +15,11 @@ void projectMain() {
 
 	IMU imu = IMU();
 
+
+
 	// loop
 	while(1) {
+		// send accel and gyro data
 		if(imu.isAccelReady()) {
 			imu.readAccel(&accelX, &accelY, &accelZ);
 			TelemetryCanPacket_IMU_Accel accelPacket = TelemetryCanPacket_IMU_Accel(accelX, accelY, accelZ);
@@ -31,6 +34,12 @@ void projectMain() {
 		}
 		#endif
 
-		HAL_Delay(1000);
+
+		// check for calibration button
+		imu.checkAndCalibrate();
+
+
+		// wait a bit
+		HAL_Delay(1);
 	}
 }

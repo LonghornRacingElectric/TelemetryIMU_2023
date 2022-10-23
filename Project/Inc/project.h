@@ -7,11 +7,9 @@ extern "C" {
 
 
 
-/* BEGIN CONFIGURATION */
+/* CONFIGURATION */
 
 #define GYRO_ENABLE
-
-/* END CONFIGURATION */
 
 
 
