@@ -13,7 +13,6 @@ IMU::IMU() {
 bool IMU::isAccelReady() {
 	regRead(REG_STATUS);
 	bool ready = (buffer[0] & 0x01);
-	setLED(ready); // LED should be on about 1/5 of the time at 208 Hz data rate and 1000 Hz code
 	return ready;
 }
 
@@ -23,6 +22,8 @@ void IMU::readAccel(uint16_t *accelX, uint16_t *accelY, uint16_t *accelZ) {
 	*accelX = buffer[0] + (buffer[1] << 8);
 	*accelY = buffer[2] + (buffer[3] << 8);
 	*accelZ = buffer[4] + (buffer[5] << 8);
+
+	setLED(false, true, false); // LED green when acceleration is read
 }
 
 bool IMU::isGyroReady() {
@@ -54,15 +55,17 @@ void IMU::regRead(uint8_t address) {
 	regRead(address, 1);
 }
 
-void IMU::setLED(bool on) {
-	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_6, (on) ? GPIO_PIN_SET : GPIO_PIN_RESET);
+void IMU::setLED(bool r, bool g, bool b) {
+	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0, (r) ? GPIO_PIN_SET : GPIO_PIN_RESET);
+	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_1, (g) ? GPIO_PIN_SET : GPIO_PIN_RESET);
+	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_2, (b) ? GPIO_PIN_SET : GPIO_PIN_RESET);
 }
 
 void IMU::checkAndCalibrate() {
-	if(HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_5)) {
+	if(HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_1)) {
 		timer++;
 		if(timer == BTN_TIME) {
-			setLED(true); // LED on 100% = calibration mode
+			setLED(false, false, true); // blue = calibration mode
 			timer = 0;
 			calibrate();
 		}
@@ -188,10 +191,11 @@ void IMU::cubeTest(float *accelXp, float *accelXn,
 				incomplete -= stableAxis;
 				stableSamples = std::queue<float>();
 
+				// LED flickers blue to indicate completed sample of one cube face
 				for(int j = 0; j < 3; j++) {
-					setLED(false);
+					setLED(false, false, false);
 					HAL_Delay(125);
-					setLED(true);
+					setLED(false, false, true);
 					HAL_Delay(125);
 				}
 			}
@@ -203,7 +207,7 @@ void IMU::cubeTest(float *accelXp, float *accelXn,
 		HAL_Delay(10);
 	}
 
-
+	setLED(false, true, false); // LED back to green, indicating test is complete
 }
 
 void IMU::calibrate() {

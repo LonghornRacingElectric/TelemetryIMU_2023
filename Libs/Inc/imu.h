@@ -57,7 +57,7 @@ class IMU {
 		void regRead(uint8_t address, uint8_t length);
 		void regRead(uint8_t address);
 
-		void setLED(bool on);
+		void setLED(bool r, bool g, bool b);
 		void cubeTest(float *accelXp, float *accelXn,
 				float *accelYp, float *accelYn,
 				float *accelZp, float *accelZn);
